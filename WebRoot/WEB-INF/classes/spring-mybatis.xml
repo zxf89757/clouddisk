@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:p="http://www.springframework.org/schema/p" 
+    xmlns:tx="http://www.springframework.org/schema/tx" 
+    xmlns:aop="http://www.springframework.org/schema/aop"  
+    xmlns:context="http://www.springframework.org/schema/context"  
+    xmlns:mvc="http://www.springframework.org/schema/mvc"  
+    xsi:schemaLocation="http://www.springframework.org/schema/beans    
+                        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd    
+                        http://www.springframework.org/schema/context    
+                        http://www.springframework.org/schema/context/spring-context-4.0.xsd    
+                        http://www.springframework.org/schema/mvc    
+                        http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+                        http://www.springframework.org/schema/tx 
+			            http://www.springframework.org/schema/tx/spring-tx-4.0.xsd 
+			            http://www.springframework.org/schema/aop 
+			            http://www.springframework.org/schema/aop/spring-aop-4.0.xsd">
+<!-- service 层 -->
+	<!-- 1. 扫描service包下所有使用注解的类型 -->
+	<context:component-scan base-package="com.hfut.test.service"/>
+	
+	<!-- 2. 配置事务管理 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    
+     <!-- 3. 开启注解事务 -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+    
+<!-- dao层  -->
+	<!-- 1. c3p0连接池 -->
+    <!-- 关联JDBC文件 -->
+    <context:property-placeholder location="classpath:jdbc.properties"/>
+    <!-- 数据库源配置 -->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+		<property name="driverClass" value="${jdbc.driver}"/>
+		<property name="jdbcUrl" value="${jdbc.url}"/>
+		<property name="user" value="${jdbc.user}"/>
+		<property name="password" value="${jdbc.password}"/>
+		<!-- c3p0连接池的私有属性 -->
+		<property name="acquireIncrement" value="${jdbc.acquireIncrement}"/>
+		<property name="checkoutTimeout" value="${jdbc.checkoutTimeout}"/>
+		<property name="idleConnectionTestPeriod" value="${jdbc.idleConnectionTestPeriod}"/>
+		<property name="maxIdleTime" value="${jdbc.maxIdleTime}"/>
+		<property name="numHelperThreads" value="${jdbc.numHelperThreads}"/>
+	</bean>
+       
+	<!-- 2. spring和MyBatis完美整合,不需要mybatis的配置映射文件 -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <!-- <property name="typeAliasesPackage" value="com.hfut.test.model"/> 别名-->
+        <property name="mapperLocations" value="classpath:com/hfut/test/mapping/*.xml"/>
+    </bean>
+    
+	<!-- 3. DAO接口所在包名，Spring会自动查找其下的类 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">  
+        <property name="basePackage" value="com.hfut.test.dao" />  
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+    </bean>
+    
+</beans>

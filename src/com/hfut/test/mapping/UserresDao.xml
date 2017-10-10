@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hfut.test.dao.UserresDao">
+
+	<resultMap id="userresmp" type="com.hfut.test.model.Userres">
+		<result column="res_id" property="res.id"/>
+		<result column="parent_id" property="parentid"/>
+		<result column="userres_name" property="userresname"/>
+		<result column="userres_updatetime" property="userresupdatetime"/>
+		<result column="islock" property="islock"/>
+		<result column="res_userid" property="res.userid"/>
+		<result column="res_name" property="res.name"/>
+		<result column="res_typeid" property="res.typeid"/>
+		<result column="res_url" property="res.url"/>
+		<result column="res_createdata" property="res.createdata"/>
+		<result column="res_describe" property="res.describe"/>
+		<result column="res_size" property="res.size"/>
+		<result column="res_savedcount" property="res.savedtime"/>
+		<result column="res_share" property="res.share"/>
+	</resultMap>
+	<select id="getUserresList" resultMap="userresmp" parameterType="java.lang.Integer">
+		<!-- 具体的sql -->
+		SELECT
+			*
+		FROM
+			"userres_info"
+		WHERE
+			"parent_id" = #{parentid} <if test="hasAuthority !=true">AND "islock" = 0</if>
+	</select>
+	<insert id="insertUserres" parameterType="com.hfut.test.model.Userres">
+		INSERT INTO "userres" 
+		values(
+			#{res.id},
+			#{parentid},
+			#{userresname},
+			#{userresupdatetime},
+			#{islock}
+		)
+	</insert>
+	<delete id="deleteUserres">
+        delete from "userres" where "res_id"=#{id} AND "parent_id"=#{parentid}
+    </delete>
+    <update id="updateUserres" parameterType="com.hfut.test.model.Userres" >
+        update "userres"
+        <trim prefix="set" suffixOverrides=",">
+		  <if test="userresname!=null">"userres_name"=#{userresname},</if>
+		  <if test="userresupdatetime!=null">"userres_updatetime" =#{userresupdatetime},</if>
+		  <if test="islock!=null">"islock" =#{islock},</if>
+		 </trim>
+		  where "res_id"=#{res.id} AND "parent_id"=#{parentid}
+    </update>
+    <select id="queryBy" resultMap="userresmp">
+		SELECT
+			*
+		FROM
+			"userres_info"
+		WHERE
+			"parent_id" = #{parentid} AND "res_id" = #{id}
+	</select>
+</mapper>

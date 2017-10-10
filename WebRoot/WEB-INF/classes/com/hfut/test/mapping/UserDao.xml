@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hfut.test.dao.UserDao">
+
+	<select id="queryByUsername" resultType="com.hfut.test.model.User" parameterType="java.lang.String">
+		SELECT
+			"user_id" as userid,
+			"user_loginname" as username,
+			"user_pwd" as password,
+			"user_email" as email,
+			"user_name" as name,
+			"user_age" as age,
+			"user_gender" as gender,
+			"user_createdata" as createdata,
+			"user_pubusedsize" as pubusedsize,
+			"user_perusedsize" as perusedsize
+		FROM
+			"userinfo"
+		WHERE
+			"user_loginname" = #{username}
+	</select>
+	<select id="getByID" resultType="com.hfut.test.model.User" parameterType="java.lang.Integer">
+		SELECT
+			"user_id" as userid,
+			"user_loginname" as username,
+			"user_pwd" as password,
+			"user_email" as email,
+			"user_name" as name,
+			"user_age" as age,
+			"user_gender" as gender,
+			"user_createdata" as createdata,
+			"user_pubusedsize" as pubusedsize,
+			"user_perusedsize" as perusedsize
+		FROM
+			"userinfo"
+		WHERE
+			"user_id" = #{userid}
+	</select>
+	<insert id="insertUser" parameterType="com.hfut.test.model.User">
+		<selectKey keyProperty="userid" order="BEFORE" resultType="java.lang.Integer">
+			select "user_id_seq".nextval as userid from DUAL
+		</selectKey>
+		INSERT INTO "userinfo" 
+		values(
+			#{userid},
+			#{username},
+			#{password},
+			#{email,jdbcType=VARCHAR},
+			#{name},
+			#{age},
+			#{gender},
+			#{createdata},
+			#{pubusedsize},
+			#{pubusedsize}
+		)
+	</insert>
+</mapper>

@@ -1,0 +1,18 @@
+			<tr>
+				<td>
+					<span class="glyphicon glyphicon-file"></span>
+					<%=resourse.userresname%>
+				</td>
+				<td><%=resourse.res.size%>M</td>
+				<td><%=resourse.userresupdatetime%></td>
+				<td>
+					<a href="javascript:void(0);" onclick="deleteuserres(<%=resourse.parentid%>,<%=resourse.res.id%>)"/>删除</a>
+					<% if (resourse.islock==0) { %>
+						<a href="javascript:void(0);" onclick="updateuserres(<%=resourse.parentid%>,<%=resourse.res.id%>,1)"/>锁定</a>
+					<% } %>
+					<% if (resourse.islock!=0) { %>
+						<a href="javascript:void(0);" onclick="updateuserres(<%=resourse.parentid%>,<%=resourse.res.id%>,0)"/>解锁</a>
+					<% } %>
+					<a href="/clouddisk/userres/<%=resourse.parentid%>/download/<%=resourse.res.id%>">下载</a>
+				</td>
+			</tr> 

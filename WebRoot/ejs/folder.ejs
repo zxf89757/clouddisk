@@ -1,0 +1,17 @@
+		<tr>
+				<td>
+					<span class="glyphicon glyphicon-folder-open"></span>
+					<a onclick="getContents(<%=folder.folderid%>)"><%=folder.foldername%></a>
+				</td>
+				<td>-</td>
+				<td><%=folder.folderdata%></td>
+				<td>
+					<a href="javascript:void(0);" onclick="deletefolder(<%=folder.folderid%>)"/>删除</a>
+					<% if (folder.islock==0) { %>
+						<a href="javascript:void(0);" onclick="updatefolder(<%=folder.folderid%>,1)"/>锁定</a>
+					<% } %>
+					<% if (folder.islock!=0) { %>
+						<a href="javascript:void(0);" onclick="updatefolder(<%=folder.folderid%>,0)"/>解锁</a>
+					<% } %>
+				</td>
+			</tr> 

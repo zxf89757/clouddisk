@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hfut.test.dao.FolderDao">
+	<select id="findRootFolder" resultType="com.hfut.test.model.Folder" parameterType="java.lang.Integer">
+		SELECT
+			"folder_id" as folderid,
+			"parent_id" as parentid,
+			"folder_name" as foldername,
+			"folder_data" as folderdata,
+			"islock" as islock,
+			"user_id" as userid
+		FROM
+			"folder"
+		WHERE
+			"parent_id" is null AND "user_id" = #{userid}
+	</select>
+	
+	<insert id="insertFolder" parameterType="com.hfut.test.model.Folder">
+		<selectKey keyProperty="folderid" order="BEFORE" resultType="java.lang.Integer">
+			select "folder_id_seq".nextval as folderid from DUAL
+		</selectKey>
+		INSERT INTO "folder" 
+		values(#{folderid},#{parentid,jdbcType=NUMERIC},#{foldername},#{folderdata},
+				default,#{userid})
+	</insert>
+	
+	<delete id="deleteFolder" parameterType="java.lang.Integer">
+        delete from "folder" where "folder_id"=#{folderid}
+    </delete>
+    
+    <update id="updateFolder" parameterType="com.hfut.test.model.Folder" >
+        update "folder"
+        <trim prefix="set" suffixOverrides=",">
+		  <if test="parentid!=null">"parent_id"=#{parentid},</if>
+		  <if test="foldername!=null">"folder_name"=#{foldername},</if>
+		  <if test="folderdata!=null">"folder_data" =#{folderdata},</if>
+		  <if test="islock!=null">"islock" =#{islock},</if>
+		  <if test="userid!=null">"user_id"=#{userid},</if>
+		 </trim>
+		  where  "folder_id"=#{folderid}
+    </update>
+    
+	<select id="getFolderList" resultType="com.hfut.test.model.Folder" parameterType="java.lang.Integer">
+		SELECT
+			"folder_id" as folderid,
+			"parent_id" as parentid,
+			"folder_name" as foldername,
+			"folder_data" as folderdata,
+			"islock" as islock,
+			"user_id" as userid
+		FROM
+			"folder"
+		WHERE
+			"parent_id" = #{parentid} <if test="hasAuthority !=true">AND "islock" = 0</if>
+	</select>
+
+	<select id="queryById" resultType="com.hfut.test.model.Folder" parameterType="java.lang.Integer">
+		SELECT
+			"folder_id" as folderid,
+			"parent_id" as parentid,
+			"folder_name" as foldername,
+			"folder_data" as folderdata,
+			"islock" as islock,
+			"user_id" as userid
+		FROM
+			"folder"
+		WHERE
+			"folder_id"=#{folderid}
+	</select>
+	
+	<select id="getTree" resultType="com.hfut.test.model.FolderTree" parameterType="java.lang.Integer">
+		SELECT
+			"folder_id" as folderid,
+			"parent_id" as parentid,
+			"folder_name" as foldername,
+			"folder_data" as folderdata,
+			"islock" as islock,
+			"user_id" as userid
+		FROM
+			"folder"
+		WHERE
+			"parent_id" = #{parentid}
+	</select>
+</mapper>
