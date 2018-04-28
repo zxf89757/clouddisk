@@ -131,6 +131,7 @@ public class VerifyFileType {
                     break;
                 }
             }
+            is.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
